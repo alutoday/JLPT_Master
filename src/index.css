@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors m-0;
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+}
+
+@layer components {
+  /* Ruby tag styling for Furigana */
+  ruby {
+    ruby-position: over;
+  }
+  
+  rt {
+    @apply text-xs text-gray-500 dark:text-gray-400;
+    font-size: 0.6em;
+  }
+}
