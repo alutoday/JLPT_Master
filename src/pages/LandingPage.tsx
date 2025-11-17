@@ -210,7 +210,7 @@ export function LandingPage() {
         <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-gray-500 dark:text-gray-400 font-medium">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-            © 2025 JLPT Practice
+            © 2025 JLPT Master
           </div>
         </div>
       </div>

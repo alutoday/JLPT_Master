@@ -89,7 +89,7 @@ export function MainLayout({ children }: MainLayoutProps) {
                 <BookOpen className="w-8 h-8 text-white dark:text-emerald-400 relative drop-shadow-lg" />
               </div>
               <span className="text-xl font-black text-white dark:bg-gradient-to-r dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400 dark:bg-clip-text dark:text-transparent drop-shadow-md">
-                JLPT Practice
+                JLPT Master
               </span>
             </Link>
 

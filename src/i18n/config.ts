@@ -47,7 +47,7 @@ const resources = {
       
       // Landing
       landing: {
-        title: 'JLPT Practice',
+        title: 'JLPT Master',
         subtitle: 'Master Japanese Language Proficiency Test',
         description: 'Practice JLPT tests with realistic questions, instant feedback, and progress tracking.',
         start: 'Start Now',
