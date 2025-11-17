@@ -24,6 +24,7 @@ interface ExamLayoutProps {
     is_correct: boolean;
     selected_option_id: number | null;
   }>;
+  testAttemptId?: number | null;
 }
 
 export const ExamLayout: React.FC<ExamLayoutProps> = ({
@@ -35,6 +36,7 @@ export const ExamLayout: React.FC<ExamLayoutProps> = ({
   onSubmit,
   correctCount,
   resultQuestions = [],
+  testAttemptId,
 }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -113,7 +115,11 @@ export const ExamLayout: React.FC<ExamLayoutProps> = ({
   };
 
   const handleExit = () => {
-    navigate('/tests');
+    if (testAttemptId) {
+      navigate(`/testAttempts/${testAttemptId}`);
+    } else {
+      navigate('/tests');
+    }
   };
 
   const handleSubmitClick = () => {
@@ -129,7 +135,11 @@ export const ExamLayout: React.FC<ExamLayoutProps> = ({
     // Cancel button = Pause and exit
     pauseTimer();
     setShowPauseModal(false);
-    navigate('/tests');
+    if (testAttemptId) {
+      navigate(`/testAttempts/${testAttemptId}`);
+    } else {
+      navigate('/tests');
+    }
   };
 
   const handleSubmitNow = () => {
@@ -138,27 +148,27 @@ export const ExamLayout: React.FC<ExamLayoutProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-40">
+      <header className="bg-gradient-to-r from-emerald-500 to-teal-600 dark:from-slate-900 dark:to-slate-900 dark:bg-slate-900 backdrop-blur-xl border-b border-emerald-600 dark:border-slate-700/50 shadow-lg shadow-emerald-500/30 dark:shadow-slate-900/50 z-40 flex-shrink-0">
         <div className="px-4 py-2.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowExitModal(true)}
-              className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              className="text-white dark:text-emerald-400 hover:bg-white/20 dark:hover:bg-emerald-900/20 rounded-xl transition-all p-1"
             >
               <X className="w-5 h-5" />
             </button>
-            <h1 className="text-base font-bold text-gray-900 dark:text-white">
+            <h1 className="text-base font-bold text-white dark:text-white">
               {mode === 'exam' ? t('exam.title') : t('exam.reviewTitle')}
             </h1>
           </div>
 
           {/* Timer (Exam Mode Only) */}
           {mode === 'exam' && (
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg">
-              <Clock className="w-4 h-4 text-primary" />
-              <span className={`font-mono text-base font-semibold ${timeRemaining < 300 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white'}`}>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-white/20 dark:bg-slate-800/80 backdrop-blur-sm rounded-lg border border-white/30 dark:border-slate-700">
+              <Clock className="w-4 h-4 text-white dark:text-emerald-400" />
+              <span className={`font-mono text-base font-semibold ${timeRemaining < 300 ? 'text-red-200 dark:text-red-400' : 'text-white dark:text-white'}`}>
                 {formatTime(timeRemaining)}
               </span>
             </div>
@@ -167,148 +177,160 @@ export const ExamLayout: React.FC<ExamLayoutProps> = ({
       </header>
 
       {/* Main Content */}
-      <div className="flex">
+      <div className="flex flex-1 overflow-hidden">
         {/* Question Area - with right padding to avoid sidebar overlap */}
-        <main className="flex-1 p-6 pb-24 pr-96">
+        <main className="flex-1 w-3/4 p-6 pb-24 overflow-y-auto">
           {children}
         </main>
 
         {/* Right Sidebar - Fixed */}
-        <aside className="w-80 bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 p-4 overflow-y-auto fixed right-0 top-[50px] bottom-0 z-30">
-          {/* Audio Player (Listening Section) */}
-          {hasAudio && audioUrl && (
-            <div className="mb-4 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-              <h3 className="text-xs font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                <Play className="w-3.5 h-3.5" />
-                音声
-              </h3>
-              <audio controls className="w-full">
-                <source src={audioUrl} type="audio/mpeg" />
-                Your browser does not support the audio element.
-              </audio>
-            </div>
-          )}
+        <aside className="w-1/4 border-l-2 border-emerald-200 dark:border-slate-700 bg-gradient-to-b from-emerald-50/50 to-teal-50/30 dark:from-slate-900 dark:to-slate-800 relative shadow-xl p-4 overflow-y-auto">
+          {/* Decorative accents */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-400/10 to-transparent dark:from-emerald-500/10 rounded-full blur-2xl"></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-teal-400/10 to-transparent dark:from-teal-500/10 rounded-full blur-2xl"></div>
+          
+          <div className="relative z-10">
+            {/* Audio Player (Listening Section) */}
+            {hasAudio && audioUrl && (
+              <div className="mb-4 p-3 bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-lg border-2 border-blue-200 dark:border-blue-700 hover:shadow-2xl hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-300">
+                <h3 className="text-xs font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                  <Play className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  音声
+                </h3>
+                <audio controls className="w-full">
+                  <source src={audioUrl} type="audio/mpeg" />
+                  Your browser does not support the audio element.
+                </audio>
+              </div>
+            )}
 
-          {/* Review Stats */}
-          {mode === 'review' && correctCount !== undefined && (
-            <div className="mb-4 p-4 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 dark:from-green-900/20 dark:via-emerald-900/20 dark:to-teal-900/20 rounded-xl border border-green-200 dark:border-green-800 shadow-sm">
-              <h3 className="text-sm font-black text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                <div className="w-1 h-4 bg-gradient-to-b from-green-600 to-emerald-600 rounded-full"></div>
-                結果
-              </h3>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-600 dark:text-gray-400 font-semibold">正解数</span>
-                  <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-600 to-emerald-600">
-                    {correctCount}<span className="text-lg text-gray-400 dark:text-gray-500">/{totalQuestions}</span>
-                  </span>
+            {/* Review Stats */}
+            {mode === 'review' && correctCount !== undefined && (
+              <div className="mb-4 p-4 bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-lg border-2 border-emerald-200 dark:border-slate-700 hover:shadow-2xl hover:border-emerald-400 dark:hover:border-emerald-600 transition-all duration-300">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-transparent dark:from-emerald-900/10 rounded-xl pointer-events-none"></div>
+                <div className="relative">
+                  <h3 className="text-sm font-black text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <div className="w-1 h-4 bg-gradient-to-b from-green-600 to-emerald-600 rounded-full"></div>
+                    結果
+                  </h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-600 dark:text-gray-400 font-semibold">正解数</span>
+                      <span className="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-br from-green-600 to-emerald-600">
+                        {correctCount}<span className="text-lg text-gray-400 dark:text-gray-500">/{totalQuestions}</span>
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-600 dark:text-gray-400 font-semibold">正答率</span>
+                      <span className="text-xl font-black text-green-600 dark:text-green-400">
+                        {Math.round((correctCount / totalQuestions) * 100)}%
+                      </span>
+                    </div>
+                    {(() => {
+                      const markedCount = questionIds.filter(qId => {
+                        const answer = answers.get(qId);
+                        return answer?.isMarked;
+                      }).length;
+                      if (markedCount > 0) {
+                        return (
+                          <div className="flex items-center justify-between pt-2 border-t border-emerald-200 dark:border-emerald-800">
+                            <span className="text-xs text-orange-600 dark:text-orange-400 font-semibold">マーク付き</span>
+                            <span className="text-base font-bold text-orange-600 dark:text-orange-400">
+                              {markedCount}
+                            </span>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()}
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-600 dark:text-gray-400 font-semibold">正答率</span>
-                  <span className="text-xl font-black text-green-600 dark:text-green-400">
-                    {Math.round((correctCount / totalQuestions) * 100)}%
-                  </span>
-                </div>
-                {(() => {
-                  const markedCount = questionIds.filter(qId => {
-                    const answer = answers.get(qId);
-                    return answer?.isMarked;
-                  }).length;
-                  if (markedCount > 0) {
+              </div>
+            )}
+
+            {/* Question Palette */}
+            <div className="mb-4 bg-white dark:bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-lg border-2 border-emerald-200 dark:border-slate-700 p-4 hover:shadow-2xl hover:border-emerald-400 dark:hover:border-emerald-600 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-50/50 to-transparent dark:from-teal-900/10 rounded-xl pointer-events-none"></div>
+              <div className="relative">
+                <h3 className="text-xs font-bold text-gray-900 dark:text-white mb-2">
+                  問題番号
+                </h3>
+                <div className="grid grid-cols-7 gap-1.5">
+                  {Array.from({ length: totalQuestions }, (_, i) => {
+                    const status = getQuestionStatus(i);
                     return (
-                      <div className="flex items-center justify-between pt-2 border-t border-green-200 dark:border-green-800">
-                        <span className="text-xs text-orange-600 dark:text-orange-400 font-semibold">マーク付き</span>
-                        <span className="text-base font-bold text-orange-600 dark:text-orange-400">
-                          {markedCount}
-                        </span>
-                      </div>
+                      <button
+                        key={i}
+                        onClick={() => handleQuestionClick(i)}
+                        className={`w-full aspect-square rounded-md font-semibold text-[10px] transition-all ${getPaletteColor(status)} ${
+                          status === 'unanswered' ? 'text-gray-700 dark:text-gray-300' : 'text-white'
+                        } hover:scale-105`}
+                        title={status}
+                      >
+                        {i + 1}
+                      </button>
                     );
-                  }
-                  return null;
-                })()}
+                  })}
+                </div>
+
+                {/* Legend */}
+                <div className="mt-3 space-y-1 text-[10px]">
+                  {mode === 'exam' ? (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded flex-shrink-0" />
+                        <span className="text-gray-600 dark:text-gray-400">未回答</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-yellow-400 rounded flex-shrink-0" />
+                        <span className="text-gray-600 dark:text-gray-400">回答済み</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-orange-400 rounded flex-shrink-0" />
+                        <span className="text-gray-600 dark:text-gray-400">要確認</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded flex-shrink-0" />
+                        <span className="text-gray-600 dark:text-gray-400">正解</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-500 rounded flex-shrink-0" />
+                        <span className="text-gray-600 dark:text-gray-400">不正解</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-gray-400 rounded flex-shrink-0" />
+                        <span className="text-gray-600 dark:text-gray-400">未回答</span>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-          )}
 
-          {/* Question Palette */}
-          <div className="mb-4">
-            <h3 className="text-xs font-bold text-gray-900 dark:text-white mb-2">
-              問題番号
-            </h3>
-            <div className="grid grid-cols-7 gap-1.5">
-              {Array.from({ length: totalQuestions }, (_, i) => {
-                const status = getQuestionStatus(i);
-                return (
-                  <button
-                    key={i}
-                    onClick={() => handleQuestionClick(i)}
-                    className={`w-full aspect-square rounded-md font-semibold text-[10px] transition-all ${getPaletteColor(status)} ${
-                      status === 'unanswered' ? 'text-gray-700 dark:text-gray-300' : 'text-white'
-                    } hover:scale-105`}
-                    title={status}
-                  >
-                    {i + 1}
-                  </button>
-                );
-              })}
-            </div>
+            {/* Submit Button (Exam Mode Only) */}
+            {mode === 'exam' && (
+              <button
+                onClick={handleSubmitClick}
+                className="w-full py-3 px-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-2xl hover:-translate-y-1 duration-300"
+              >
+                <CheckCircle className="w-5 h-5" />
+                提出
+              </button>
+            )}
 
-            {/* Legend */}
-            <div className="mt-3 space-y-1 text-[10px]">
-              {mode === 'exam' ? (
-                <>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-white dark:bg-gray-700 border-2 border-gray-300 dark:border-gray-600 rounded flex-shrink-0" />
-                    <span className="text-gray-600 dark:text-gray-400">未回答</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-yellow-400 rounded flex-shrink-0" />
-                    <span className="text-gray-600 dark:text-gray-400">回答済み</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-orange-400 rounded flex-shrink-0" />
-                    <span className="text-gray-600 dark:text-gray-400">要確認</span>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-green-500 rounded flex-shrink-0" />
-                    <span className="text-gray-600 dark:text-gray-400">正解</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-500 rounded flex-shrink-0" />
-                    <span className="text-gray-600 dark:text-gray-400">不正解</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-gray-400 rounded flex-shrink-0" />
-                    <span className="text-gray-600 dark:text-gray-400">未回答</span>
-                  </div>
-                </>
-              )}
-            </div>
+            {/* Exit Button (Review Mode) */}
+            {mode === 'review' && (
+              <button
+                onClick={handleExit}
+                className="w-full py-2.5 px-3 bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-xl text-sm font-bold hover:bg-gray-300 dark:hover:bg-slate-600 transition-all hover:shadow-lg hover:-translate-y-1 duration-300"
+              >
+                終了
+              </button>
+            )}
           </div>
-
-          {/* Submit Button (Exam Mode Only) */}
-          {mode === 'exam' && (
-            <button
-              onClick={handleSubmitClick}
-              className="w-full py-3 px-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-            >
-              <CheckCircle className="w-5 h-5" />
-              提出
-            </button>
-          )}
-
-          {/* Exit Button (Review Mode) */}
-          {mode === 'review' && (
-            <button
-              onClick={handleExit}
-              className="w-full py-2.5 px-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-            >
-              終了
-            </button>
-          )}
         </aside>
       </div>
 

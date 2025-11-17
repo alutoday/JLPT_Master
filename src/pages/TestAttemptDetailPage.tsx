@@ -5,12 +5,13 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Book, Headphones, FileText, Clock, CheckCircle, PlayCircle, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { dataService } from '../services';
 import type { ITestAttempt } from '../types';
 import { HTMLRenderer } from '../components/HTMLRenderer';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { useAuthStore } from '../store/useAuthStore';
+import { SectionList } from '../components/SectionList';
 
 export function TestAttemptDetailPage() {
   const { testAttemptId } = useParams<{ testAttemptId: string }>();
@@ -38,61 +39,29 @@ export function TestAttemptDetailPage() {
     }
   };
 
-  const getSectionIcon = (sectionName: string) => {
-    if (sectionName.includes('言語知識') || sectionName.includes('Language')) {
-      return <Book className="w-6 h-6" />;
-    }
-    if (sectionName.includes('聴解') || sectionName.includes('Listening')) {
-      return <Headphones className="w-6 h-6" />;
-    }
-    return <FileText className="w-6 h-6" />;
-  };
-
-  const getSectionGradient = (index: number) => {
-    const gradients = [
-      'from-blue-500 to-cyan-500',
-      'from-purple-500 to-pink-500',
-      'from-orange-500 to-red-500',
-    ];
-    return gradients[index % gradients.length];
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'COMPLETED':
-        return <CheckCircle className="w-5 h-5 text-green-500" />;
-      case 'IN_PROGRESS':
-        return <Clock className="w-5 h-5 text-blue-500" />;
-      case 'PAUSED':
-        return <Clock className="w-5 h-5 text-yellow-500" />;
-      default:
-        return <PlayCircle className="w-5 h-5 text-gray-400" />;
-    }
-  };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800';
+        return 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-300/50 dark:border-emerald-700/50';
       case 'IN_PROGRESS':
-        return 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800';
+        return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300/50 dark:border-blue-700/50';
       case 'PAUSED':
-        return 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800';
+        return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-300/50 dark:border-amber-700/50';
       default:
-        return 'bg-gray-50 dark:bg-gray-900/20 text-gray-700 dark:text-gray-400 border-gray-200 dark:border-gray-800';
+        return 'bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-400 border-gray-300/50 dark:border-gray-700/50';
     }
   };
 
   const getStatusText = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'Đã hoàn thành';
+        return '✓ Hoàn thành';
       case 'IN_PROGRESS':
-        return 'Đang làm';
+        return '⏱ Đang làm';
       case 'PAUSED':
-        return 'Tạm dừng';
+        return '⏸ Tạm dừng';
       default:
-        return 'Chưa bắt đầu';
+        return '○ Chưa làm';
     }
   };
 
@@ -117,16 +86,6 @@ export function TestAttemptDetailPage() {
     }).format(date);
   };
 
-  const formatTimeRemaining = (seconds: number | null) => {
-    if (seconds === null || seconds === 0) return null;
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    if (hours > 0) {
-      return `${hours}h ${minutes}m`;
-    }
-    return `${minutes}m`;
-  };
-
   if (loading) {
     return <LoadingSpinner text="Đang tải..." />;
   }
@@ -144,20 +103,20 @@ export function TestAttemptDetailPage() {
       {/* Back Button */}
       <button
         onClick={() => navigate(`/tests/${testAttempt.test_id}`)}
-        className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+        className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors group"
       >
-        <ArrowLeft className="w-5 h-5" />
-        <span className="font-medium">Quay lại danh sách</span>
+        <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+        <span className="font-semibold">Quay lại danh sách</span>
       </button>
 
       {/* Test Attempt Header */}
-      <div className="bg-gradient-to-r from-primary-50 to-primary-100 dark:from-primary-900/20 dark:to-primary-800/20 rounded-2xl p-6 border border-primary-200 dark:border-primary-800">
+      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-5 border border-emerald-200/80 dark:border-emerald-800/80">
         <HTMLRenderer
           content={testAttempt.test_title}
           className="text-2xl font-bold text-gray-900 dark:text-white mb-3"
         />
-        <div className="flex flex-wrap items-center gap-4">
-          <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(testAttempt.is_completed ? 'COMPLETED' : 'IN_PROGRESS')}`}>
+        <div className="flex flex-wrap items-center gap-3">
+          <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${getStatusColor(testAttempt.is_completed ? 'COMPLETED' : 'IN_PROGRESS')}`}>
             {getStatusText(testAttempt.is_completed ? 'COMPLETED' : 'IN_PROGRESS')}
           </span>
           <span className="text-sm text-gray-600 dark:text-gray-400">
@@ -166,11 +125,11 @@ export function TestAttemptDetailPage() {
           {testAttempt.is_completed && testAttempt.total_score !== null && (
             <div className="ml-auto">
               <div className="text-right">
-                <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">
+                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400 leading-none mb-1">
                   {testAttempt.total_score}%
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Điểm trung bình
+                <div className="text-[9px] text-gray-500 dark:text-gray-500 font-bold uppercase tracking-wider">
+                  Avg Score
                 </div>
               </div>
             </div>
@@ -179,101 +138,20 @@ export function TestAttemptDetailPage() {
       </div>
 
       {/* Section Attempts */}
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-          Các phần thi ({testAttempt.sections.length})
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {testAttempt.sections.map((section, index) => (
-            <div
-              key={section.id}
-              className="group bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 cursor-pointer hover:-translate-y-1 flex flex-col"
-              onClick={() => handleSectionClick(section)}
-            >
-              {/* Gradient Top Bar */}
-              <div className={`h-1.5 bg-gradient-to-r ${getSectionGradient(index)}`} />
-
-              <div className="p-5 flex flex-col flex-1">
-                {/* Icon & Title */}
-                <div className="flex items-start gap-3 mb-4 min-h-[64px]">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${getSectionGradient(index)} flex items-center justify-center text-white shadow-lg flex-shrink-0`}>
-                    {getSectionIcon(section.section_name)}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <HTMLRenderer
-                      content={section.section_name}
-                      className="font-bold text-gray-900 dark:text-white mb-2 line-clamp-2"
-                    />
-                  </div>
-                </div>
-
-                {/* Spacer to push content to bottom */}
-                <div className="flex-1" />
-
-                {/* Status - Always at same position */}
-                <div className="mb-3">
-                  <div className="flex items-center gap-2">
-                    {getStatusIcon(section.status)}
-                    <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">
-                      {getStatusText(section.status)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Stats - Always at bottom */}
-                <div className="space-y-2 mb-4">
-                  {section.status === 'COMPLETED' ? (
-                    <>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Điểm số:</span>
-                        <span className="font-bold text-primary-600 dark:text-primary-400">
-                          {section.score}%
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600 dark:text-gray-400">Số câu đúng:</span>
-                        <span className="font-semibold text-gray-900 dark:text-white">
-                          {section.correct_count}/{section.question_count}
-                        </span>
-                      </div>
-                    </>
-                  ) : section.status === 'NOT_STARTED' ? (
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600 dark:text-gray-400">Thời gian bài thi:</span>
-                      <span className="font-bold text-gray-900 dark:text-white">
-                        {section.time_limit} phút
-                      </span>
-                    </div>
-                  ) : (
-                    <>
-                      {section.time_remaining !== null && section.time_remaining !== undefined && section.time_remaining > 0 && (
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600 dark:text-gray-400">Thời gian còn lại:</span>
-                          <span className="font-bold text-gray-900 dark:text-white">
-                            {formatTimeRemaining(section.time_remaining)}
-                          </span>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-
-                {/* CTA */}
-                <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
-                  <span className="text-sm font-bold text-primary-600 dark:text-primary-400">
-                    {section.status === 'COMPLETED' ? 'Xem lại' : section.status === 'NOT_STARTED' ? 'Bắt đầu' : 'Tiếp tục'}
-                  </span>
-                  <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center group-hover:bg-primary-600 dark:group-hover:bg-primary-500 transition-all group-hover:scale-110">
-                    <span className="text-primary-600 dark:text-primary-400 group-hover:text-white font-bold group-hover:translate-x-0.5 transition-all">
-                      →
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <SectionList
+        sections={testAttempt.sections.map(section => ({
+          id: section.id,
+          name: section.section_name,
+          time_limit: section.time_limit,
+          question_count: section.question_count,
+          status: section.status,
+          score: section.score,
+          correct_count: section.correct_count,
+          time_remaining: section.time_remaining
+        }))}
+        onSectionClick={handleSectionClick}
+        mode="attempt"
+      />
     </div>
   );
 }

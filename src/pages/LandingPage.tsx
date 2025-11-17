@@ -65,7 +65,7 @@ export function LandingPage() {
 
   return (
     <AuthLayout>
-      <div className="h-screen w-full overflow-hidden relative bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="h-screen w-full overflow-hidden relative">
         
         {/* Top Bar - Theme & Language */}
         <div className="absolute top-6 right-6 flex items-center gap-3 z-50">
@@ -73,18 +73,18 @@ export function LandingPage() {
           <div className="relative">
             <button
               onClick={() => setShowLangMenu(!showLangMenu)}
-              className="p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all"
+              className="p-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all border border-emerald-100 dark:border-gray-700"
             >
-              <Globe className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+              <Globe className="w-5 h-5 text-emerald-600 dark:text-gray-300" />
             </button>
             {showLangMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border-2 border-emerald-100 dark:border-gray-700 overflow-hidden backdrop-blur-md">
                 {languages.map((lang) => (
                   <button
                     key={lang.code}
                     onClick={() => changeLanguage(lang.code)}
-                    className={`w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-3 ${
-                      i18n.language === lang.code ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                    className={`w-full px-4 py-3 text-left hover:bg-emerald-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-3 ${
+                      i18n.language === lang.code ? 'bg-emerald-100 dark:bg-emerald-900/20 font-semibold' : ''
                     }`}
                   >
                     <span className="text-2xl">{lang.flag}</span>
@@ -100,12 +100,12 @@ export function LandingPage() {
           {/* Theme Toggle */}
           <button
             onClick={() => setIsDark(!isDark)}
-            className="p-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all"
+            className="p-3 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all border border-emerald-100 dark:border-gray-700"
           >
             {isDark ? (
-              <Sun className="w-5 h-5 text-yellow-500" />
+              <Sun className="w-5 h-5 text-amber-500" />
             ) : (
-              <Moon className="w-5 h-5 text-indigo-600" />
+              <Moon className="w-5 h-5 text-emerald-600" />
             )}
           </button>
         </div>
@@ -115,14 +115,17 @@ export function LandingPage() {
           <div className="max-w-6xl w-full">
             
             {/* Hero Section */}
-            <div className="text-center space-y-8 mb-12">
+            <div className="text-center space-y-6 mb-8">
               
-              {/* Title */}
+              {/* Title with gradient */}
               <div className="space-y-4">
-                <h1 className="text-6xl lg:text-8xl font-black text-gray-900 dark:text-white">
-                  {t('landing.title')}
-                </h1>
-                <p className="text-xl lg:text-2xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                <div className="inline-block">
+                  <h1 className="text-5xl lg:text-7xl font-black bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400 bg-clip-text text-transparent leading-tight">
+                    {t('landing.title')}
+                  </h1>
+                  <div className="h-1.5 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 rounded-full mt-3 mx-auto w-3/4"></div>
+                </div>
+                <p className="text-lg lg:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
                   {t('landing.subtitle')}
                 </p>
               </div>
@@ -131,18 +134,20 @@ export function LandingPage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <button
                   onClick={handleStart}
-                  className="group px-10 py-5 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white text-lg font-bold rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center gap-3"
+                  className="group relative px-10 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 dark:from-emerald-600 dark:to-teal-700 dark:hover:from-emerald-700 dark:hover:to-teal-800 text-white text-lg font-bold rounded-2xl shadow-2xl hover:shadow-emerald-500/50 transform hover:scale-105 transition-all duration-300 flex items-center gap-3 overflow-hidden"
                 >
-                  {t('landing.start')}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
+                  <span className="relative">{t('landing.start')}</span>
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform relative" />
                 </button>
                 
                 {/* JLPT Levels */}
                 <div className="flex items-center gap-2">
-                  {['N5', 'N4', 'N3', 'N2', 'N1'].map((level) => (
+                  {['N5', 'N4', 'N3', 'N2', 'N1'].map((level, index) => (
                     <div
                       key={level}
-                      className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-xl shadow-md text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:scale-110 transition-transform"
+                      className="w-12 h-12 flex items-center justify-center bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl text-sm font-black text-emerald-600 dark:text-emerald-400 hover:scale-110 transition-all border-2 border-emerald-100 dark:border-gray-700 hover:border-emerald-400 cursor-pointer"
+                      style={{ animationDelay: `${index * 0.1}s` }}
                     >
                       {level}
                     </div>
@@ -151,44 +156,44 @@ export function LandingPage() {
               </div>
             </div>
 
-            {/* Features - Clean Cards */}
+            {/* Features - Elegant Cards */}
             <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               
               {/* Feature 1 */}
-              <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 border border-gray-200/50 dark:border-gray-700/50">
-                <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center">
-                  <BookOpen className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              <div className="group bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-5 text-center shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border-2 border-emerald-100 dark:border-gray-700 hover:border-emerald-400 dark:hover:border-emerald-500">
+                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-emerald-400 to-teal-500 dark:from-emerald-500 dark:to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <BookOpen className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                   {t('landing.features.practice')}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                   {t('landing.features.practiceDesc')}
                 </p>
               </div>
 
               {/* Feature 2 */}
-              <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 border border-gray-200/50 dark:border-gray-700/50">
-                <div className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-2xl flex items-center justify-center">
-                  <TrendingUp className="w-8 h-8 text-green-600 dark:text-green-400" />
+              <div className="group bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-5 text-center shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border-2 border-emerald-100 dark:border-gray-700 hover:border-emerald-400 dark:hover:border-emerald-500">
+                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-emerald-400 to-teal-500 dark:from-emerald-500 dark:to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <TrendingUp className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                   {t('landing.features.tracking')}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                   {t('landing.features.trackingDesc')}
                 </p>
               </div>
 
               {/* Feature 3 */}
-              <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl p-8 text-center shadow-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 border border-gray-200/50 dark:border-gray-700/50">
-                <div className="w-16 h-16 mx-auto mb-4 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center">
-                  <Award className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+              <div className="group bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl p-5 text-center shadow-xl hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 border-2 border-emerald-100 dark:border-gray-700 hover:border-emerald-400 dark:hover:border-emerald-500">
+                <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-br from-emerald-400 to-teal-500 dark:from-emerald-500 dark:to-teal-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <Award className="w-7 h-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                   {t('landing.features.feedback')}
                 </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
                   {t('landing.features.feedbackDesc')}
                 </p>
               </div>
@@ -202,8 +207,11 @@ export function LandingPage() {
         </div>
 
         {/* Footer */}
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-xs text-gray-500 dark:text-gray-500">
-          © 2025 JLPT Practice
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 text-sm text-gray-500 dark:text-gray-400 font-medium">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            © 2025 JLPT Practice
+          </div>
         </div>
       </div>
 

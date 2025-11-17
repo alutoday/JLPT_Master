@@ -26,6 +26,7 @@ export const ExamPage: React.FC = () => {
 
   const [section, setSection] = useState<ISectionWithParts | null>(null);
   const [result, setResult] = useState<IResult | null>(null);
+  const [testAttemptId, setTestAttemptId] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   const examMode = searchParams.get('mode') as 'exam' | 'review' || 'exam';
@@ -46,6 +47,7 @@ export const ExamPage: React.FC = () => {
       
       // Get section data from test_attempt -> test -> sections
       const testAttempt = await dataService.getTestAttempt(sectionAttempt.test_attempt_id);
+      setTestAttemptId(testAttempt.id);
       const testDetail = await dataService.getTestDetail(testAttempt.test_id);
       const sectionData = testDetail.sections.find(s => s.id === sectionAttempt.section_id);
 
@@ -105,9 +107,12 @@ export const ExamPage: React.FC = () => {
       const resultData = await dataService.submitAttempt(submission);
       setResult(resultData);
       
-      // Switch to review mode
-      navigate(`/sectionAttempts/${sectionAttemptId}?mode=review`);
-      window.location.reload(); // Force reload to switch mode
+      // Navigate to test attempt detail page
+      if (testAttemptId) {
+        navigate(`/testAttempts/${testAttemptId}`);
+      } else {
+        navigate('/tests');
+      }
     } catch (error) {
       console.error('Failed to submit exam:', error);
     }
@@ -168,7 +173,7 @@ export const ExamPage: React.FC = () => {
     return (
       <div
         key={question.id}
-        id={`question-${questionIndex + 1}`}
+        id={`question-${question.id}`}
         className="mb-10 scroll-mt-20"
       >
         {/* Question Header */}
@@ -349,6 +354,7 @@ export const ExamPage: React.FC = () => {
       onSubmit={handleSubmit}
       correctCount={result?.correct_count}
       resultQuestions={result?.questions}
+      testAttemptId={testAttemptId}
     >
       <div className="space-y-10 py-4">
         {section.parts.map((part) => (

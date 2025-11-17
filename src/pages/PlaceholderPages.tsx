@@ -10,11 +10,20 @@ import {
   TrendingUp, 
   Award,
   Calendar,
-  CircleCheckBig
+  User,
+  Settings,
+  Edit2,
+  Lock,
+  Eye,
+  EyeOff,
+  Upload,
+  X
 } from 'lucide-react';
 import { dataService } from '../services';
 import { useAuthStore } from '../store/useAuthStore';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { TestAttemptsList } from '../components/TestAttemptsList';
+import { HTMLRenderer } from '../components/HTMLRenderer';
 import type { ITestAttempt } from '../types';
 
 export function HistoryPage() {
@@ -101,11 +110,11 @@ export function HistoryPage() {
   );
 
   const getActivityColor = (count: number) => {
-    if (count === 0) return 'bg-gray-100 dark:bg-gray-700';
-    if (count === 1) return 'bg-green-200 dark:bg-green-400/30';
-    if (count === 2) return 'bg-green-400 dark:bg-green-400/50';
-    if (count === 3) return 'bg-green-500 dark:bg-green-400/70';
-    return 'bg-green-600 dark:bg-green-400/90';
+    if (count === 0) return 'bg-gray-100 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700';
+    if (count === 1) return 'bg-emerald-200 dark:bg-emerald-500/60 border border-emerald-300 dark:border-emerald-400';
+    if (count === 2) return 'bg-emerald-400 dark:bg-emerald-500/80 border border-emerald-500 dark:border-emerald-300';
+    if (count === 3) return 'bg-emerald-500 dark:bg-emerald-400/90 border border-emerald-600 dark:border-emerald-200';
+    return 'bg-emerald-600 dark:bg-emerald-300 border border-emerald-700 dark:border-emerald-100';
   };
 
   if (loading) {
@@ -120,78 +129,80 @@ export function HistoryPage() {
     <div className="space-y-8 pb-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400 mb-2">
           学習履歴
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-gray-600 dark:text-gray-400 font-medium">
           あなたの学習記録と進捗を確認しましょう
         </p>
       </div>
 
       {/* Section 1: Statistics Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border-2 border-emerald-200 dark:border-slate-800 shadow-md hover:shadow-2xl hover:border-emerald-500 hover:-translate-y-1 transition-all">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <div className="w-10 h-10 rounded-lg bg-emerald-600 dark:bg-emerald-500/30 flex items-center justify-center shadow-md">
+              <CheckCircle className="w-5 h-5 text-white dark:text-emerald-300" />
             </div>
             <div className="text-2xl font-black text-gray-900 dark:text-white">
               {completedTests}
             </div>
           </div>
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+          <div className="text-sm font-medium text-gray-700 dark:text-gray-200">
             完了した試験
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border-2 border-orange-200 dark:border-slate-800 shadow-md hover:shadow-2xl hover:border-orange-500 hover:-translate-y-1 transition-all">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-              <Clock className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+            <div className="w-10 h-10 rounded-lg bg-orange-600 dark:bg-amber-500/30 flex items-center justify-center shadow-md">
+              <Clock className="w-5 h-5 text-white dark:text-amber-300" />
             </div>
             <div className="text-2xl font-black text-gray-900 dark:text-white">
               {incompleteTests}
             </div>
           </div>
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+          <div className="text-sm font-medium text-gray-700 dark:text-gray-200">
             未完了の試験
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border-2 border-blue-200 dark:border-slate-800 shadow-md hover:shadow-2xl hover:border-blue-500 hover:-translate-y-1 transition-all">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <div className="w-10 h-10 rounded-lg bg-blue-600 dark:bg-sky-500/30 flex items-center justify-center shadow-md">
+              <TrendingUp className="w-5 h-5 text-white dark:text-sky-300" />
             </div>
             <div className="text-2xl font-black text-gray-900 dark:text-white">
               {avgScore.toFixed(0)}%
             </div>
           </div>
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+          <div className="text-sm font-medium text-gray-700 dark:text-gray-200">
             平均スコア
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border-2 border-purple-200 dark:border-slate-800 shadow-md hover:shadow-2xl hover:border-purple-500 hover:-translate-y-1 transition-all">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
-              <Award className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            <div className="w-10 h-10 rounded-lg bg-purple-600 dark:bg-violet-500/30 flex items-center justify-center shadow-md">
+              <Award className="w-5 h-5 text-white dark:text-violet-300" />
             </div>
-            <div className="text-2xl font-black text-gray-900 dark:text-white">
+            <div className="text-2xl font-black text-slate-900 dark:text-white">
               {highestScore}%
             </div>
           </div>
-          <div className="text-sm font-medium text-gray-600 dark:text-gray-400">
+          <div className="text-sm font-medium text-slate-600 dark:text-slate-300">
             最高スコア
           </div>
         </div>
       </div>
 
       {/* Section 2: Activity Heatmap */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 border border-gray-200 dark:border-gray-700">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-6 border-2 border-emerald-100 dark:border-slate-700">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+              <Calendar className="w-5 h-5 text-white" />
+            </div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
               学習アクティビティ
             </h2>
@@ -203,10 +214,10 @@ export function HistoryPage() {
               <button
                 key={year}
                 onClick={() => setSelectedYear(year)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                className={`px-3 py-2 rounded-xl text-sm font-bold transition-all ${
                   selectedYear === year
-                    ? 'bg-primary-600 text-white shadow-md'
-                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg scale-105'
+                    : 'bg-white dark:bg-slate-800 text-emerald-700 dark:text-gray-300 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border-2 border-emerald-200 dark:border-slate-700'
                 }`}
               >
                 {year}
@@ -220,7 +231,7 @@ export function HistoryPage() {
             {/* Month labels */}
             <div className="flex gap-[3px] mb-2 ml-8">
               {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((month, i) => (
-                <div key={month} className="text-xs text-gray-500 dark:text-gray-400" style={{ width: `${(53 / 12) * 11}px` }}>
+                <div key={month} className="text-xs text-gray-500 dark:text-gray-300" style={{ width: `${(53 / 12) * 11}px` }}>
                   {i % 2 === 0 ? month : ''}
                 </div>
               ))}
@@ -231,11 +242,11 @@ export function HistoryPage() {
               {/* Day labels */}
               <div className="flex flex-col gap-[3px] mr-2">
                 <div className="h-[11px]" />
-                <div className="h-[11px] text-xs text-gray-500 dark:text-gray-400">Mon</div>
+                <div className="h-[11px] text-xs text-gray-500 dark:text-gray-300">Mon</div>
                 <div className="h-[11px]" />
-                <div className="h-[11px] text-xs text-gray-500 dark:text-gray-400">Wed</div>
+                <div className="h-[11px] text-xs text-gray-500 dark:text-gray-300">Wed</div>
                 <div className="h-[11px]" />
-                <div className="h-[11px] text-xs text-gray-500 dark:text-gray-400">Fri</div>
+                <div className="h-[11px] text-xs text-gray-500 dark:text-gray-300">Fri</div>
                 <div className="h-[11px]" />
               </div>
               
@@ -252,8 +263,8 @@ export function HistoryPage() {
                       <div
                         key={dayIndex}
                         className={`w-[11px] h-[11px] rounded-sm ${
-                          isCurrentYear ? getActivityColor(data?.count || 0) : 'bg-gray-50 dark:bg-gray-900'
-                        } transition-all hover:ring-2 hover:ring-gray-400 dark:hover:ring-gray-500 cursor-pointer`}
+                          isCurrentYear ? getActivityColor(data?.count || 0) : 'bg-emerald-50/50 dark:bg-slate-800/50'
+                        } transition-all hover:ring-2 hover:ring-emerald-400 dark:hover:ring-emerald-500 cursor-pointer`}
                         title={`${data?.date || ''}: ${data?.count || 0} tests`}
                       />
                     );
@@ -263,14 +274,14 @@ export function HistoryPage() {
             </div>
             
             {/* Legend */}
-            <div className="flex items-center gap-2 mt-4 text-xs text-gray-600 dark:text-gray-400">
+            <div className="flex items-center gap-2 mt-4 text-xs text-gray-600 dark:text-gray-300 font-medium">
               <span>少ない</span>
               <div className="flex gap-1">
-                <div className="w-[11px] h-[11px] rounded-sm bg-gray-100 dark:bg-gray-800" />
-                <div className="w-[11px] h-[11px] rounded-sm bg-green-200 dark:bg-green-900/40" />
-                <div className="w-[11px] h-[11px] rounded-sm bg-green-400 dark:bg-green-700/60" />
-                <div className="w-[11px] h-[11px] rounded-sm bg-green-500 dark:bg-green-600/70" />
-                <div className="w-[11px] h-[11px] rounded-sm bg-green-600 dark:bg-green-500/80" />
+                <div className="w-[11px] h-[11px] rounded-sm bg-gray-100 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700" />
+                <div className="w-[11px] h-[11px] rounded-sm bg-emerald-200 dark:bg-emerald-500/60 border border-emerald-300 dark:border-emerald-400" />
+                <div className="w-[11px] h-[11px] rounded-sm bg-emerald-400 dark:bg-emerald-500/80 border border-emerald-500 dark:border-emerald-300" />
+                <div className="w-[11px] h-[11px] rounded-sm bg-emerald-500 dark:bg-emerald-400/90 border border-emerald-600 dark:border-emerald-200" />
+                <div className="w-[11px] h-[11px] rounded-sm bg-emerald-600 dark:bg-emerald-300 border border-emerald-700 dark:border-emerald-100" />
               </div>
               <span>多い</span>
             </div>
@@ -279,102 +290,548 @@ export function HistoryPage() {
       </div>
 
       {/* Section 3: Test Attempts List */}
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-          試験履歴 ({testAttempts.length})
-        </h2>
-        
-        {testAttempts.length === 0 ? (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-12 text-center border border-gray-200 dark:border-gray-700">
-            <p className="text-gray-500 dark:text-gray-400">まだ試験を受けていません</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {testAttempts.map((attempt) => {
-              const completedSections = attempt.sections?.filter(s => s.status === 'COMPLETED').length || 0;
-              const totalSections = attempt.sections?.length || 0;
-
-              return (
-                <div
-                  key={attempt.id}
-                  onClick={() => navigate(`/testAttempts/${attempt.id}`)}
-                  className="group bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-all cursor-pointer"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        {attempt.is_completed ? (
-                          <CircleCheckBig className="w-5 h-5 text-green-500" />
-                        ) : (
-                          <Clock className="w-5 h-5 text-blue-500" />
-                        )}
-                        <span 
-                          className="font-semibold text-gray-900 dark:text-white"
-                          dangerouslySetInnerHTML={{ __html: attempt.test_title }}
-                        />
-                        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${
-                          attempt.is_completed
-                            ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800'
-                            : 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800'
-                        }`}>
-                          {attempt.is_completed ? 'Đã hoàn thành' : 'Chưa hoàn thành'}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-2">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="w-4 h-4" />
-                          <span>
-                            lúc {new Date(attempt.started_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} {new Date(attempt.started_at).toLocaleDateString('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' })}
-                          </span>
-                        </div>
-                        {attempt.is_completed && attempt.completed_at && (
-                          <>
-                            <span>•</span>
-                            <span>
-                              Hoàn thành: lúc {new Date(attempt.completed_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })} {new Date(attempt.completed_at).toLocaleDateString('vi-VN', { day: 'numeric', month: 'long', year: 'numeric' })}
-                            </span>
-                          </>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                        <span>{totalSections} sections</span>
-                        <span>•</span>
-                        <span>{completedSections} hoàn thành</span>
-                      </div>
-                    </div>
-
-                    {attempt.is_completed && attempt.total_score !== null && (
-                      <div className="text-right ml-4">
-                        <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-primary-400">
-                          {attempt.total_score}%
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                          Điểm trung bình
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
+      <TestAttemptsList 
+        attempts={testAttempts}
+        showTitle={true}
+      />
     </div>
   );
 }
 
 export function ProfilePage() {
+  const { user } = useAuthStore();
+  const [isEditing, setIsEditing] = useState(false);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [formData, setFormData] = useState({
+    full_name: user?.full_name || '',
+    email: user?.email || '',
+    urlAvatar: user?.urlAvatar || '',
+  });
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
+  const [showPasswords, setShowPasswords] = useState({
+    current: false,
+    new: false,
+    confirm: false,
+  });
+  const [previewAvatar, setPreviewAvatar] = useState(user?.urlAvatar || '');
+  const [tempAvatar, setTempAvatar] = useState(user?.urlAvatar || '');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        full_name: user.full_name,
+        email: user.email,
+        urlAvatar: user.urlAvatar || '',
+      });
+      setPreviewAvatar(user.urlAvatar || '');
+      setTempAvatar(user.urlAvatar || '');
+    }
+  }, [user]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('画像ファイルを選択してください');
+        return;
+      }
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('ファイルサイズは5MB以下にしてください');
+        return;
+      }
+      setSelectedFile(file);
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setTempAvatar(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    setTempAvatar('');
+  };
+
+  const handleSaveAvatar = async () => {
+    if (selectedFile) {
+      setIsSaving(true);
+      try {
+        // TODO: Upload file to server and get URL
+        // const formData = new FormData();
+        // formData.append('avatar', selectedFile);
+        // const response = await dataService.uploadAvatar(formData);
+        // const avatarUrl = response.url;
+        
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Mock delay
+        console.log('Uploading file:', selectedFile.name);
+        
+        setPreviewAvatar(tempAvatar);
+        setFormData(prev => ({ ...prev, urlAvatar: tempAvatar }));
+        setShowAvatarModal(false);
+        setSelectedFile(null);
+      } catch (error) {
+        console.error('Failed to upload avatar:', error);
+        alert('アップロードに失敗しました');
+      } finally {
+        setIsSaving(false);
+      }
+    }
+  };
+
+  const handleCancelAvatar = () => {
+    setTempAvatar(previewAvatar);
+    setSelectedFile(null);
+    setShowAvatarModal(false);
+  };
+
+  const handleSavePassword = async () => {
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      alert('新しいパスワードが一致しません');
+      return;
+    }
+    setIsSaving(true);
+    try {
+      // TODO: Call API to change password
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('Changing password');
+      setPasswordData({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
+      setShowPasswordModal(false);
+      alert('パスワードが変更されました');
+    } catch (error) {
+      console.error('Failed to change password:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      // TODO: Call API to update user profile
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Mock delay
+      console.log('Saving profile:', formData);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Failed to save profile:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
+    if (user) {
+      setFormData({
+        full_name: user.full_name,
+        email: user.email,
+        urlAvatar: user.urlAvatar || '',
+      });
+      setPreviewAvatar(user.urlAvatar || '');
+      setTempAvatar(user.urlAvatar || '');
+    }
+    setIsEditing(false);
+  };
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-        Profile
-      </h1>
-      <p className="text-gray-600 dark:text-gray-400">
-        Profile page coming soon...
-      </p>
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 dark:from-emerald-400 dark:via-teal-400 dark:to-cyan-400 mb-2">
+          プロフィール
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 font-medium">
+          あなたのアカウント情報を管理
+        </p>
+      </div>
+
+      {/* Profile Card */}
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-800 overflow-hidden">
+        {/* Cover with Avatar */}
+        <div className="relative h-32 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500">
+          <div className="absolute -bottom-16 left-8">
+            <div className="relative">
+              {previewAvatar ? (
+                <img
+                  src={previewAvatar}
+                  alt="Avatar"
+                  className="w-32 h-32 rounded-2xl object-cover border-4 border-white dark:border-slate-900 shadow-xl"
+                  onError={() => setPreviewAvatar('')}
+                />
+              ) : (
+                <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white text-5xl font-black border-4 border-white dark:border-slate-900 shadow-xl">
+                  {user?.full_name?.charAt(0).toUpperCase() || 'U'}
+                </div>
+              )}
+              <button
+                onClick={() => setShowAvatarModal(true)}
+                className="absolute bottom-0 right-0 w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-110 transition-all cursor-pointer border-2 border-white dark:border-slate-900"
+              >
+                <Edit2 className="w-5 h-5 text-white" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Profile Info */}
+        <div className="pt-20 px-8 pb-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <HTMLRenderer
+                content={user?.full_name || ''}
+                className="text-2xl font-bold text-gray-900 dark:text-white mb-1"
+              />
+              <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-bold border border-emerald-300/50 dark:border-emerald-700/50">
+                  {user?.role === 'ADMIN' ? '👑 Admin' : '👤 User'}
+                </span>
+              </p>
+            </div>
+            {!isEditing ? (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all"
+              >
+                <Settings className="w-4 h-4" />
+                編集
+              </button>
+            ) : (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleCancel}
+                  disabled={isSaving}
+                  className="px-4 py-2.5 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+                >
+                  キャンセル
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50"
+                >
+                  {isSaving ? (
+                    <>
+                      <Clock className="w-4 h-4 animate-spin" />
+                      保存中...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-4 h-4" />
+                      保存
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Change Password Button */}
+          <div className="mb-6">
+            <button
+              onClick={() => setShowPasswordModal(true)}
+              className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-200 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-600 transition-all hover:scale-105"
+            >
+              <Lock className="w-4 h-4" />
+              パスワード変更
+            </button>
+          </div>
+
+          {/* Info Grid */}
+          <div className="space-y-4">
+            {/* Full Name */}
+            <div className="group">
+              <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">
+                氏名 / Full Name
+              </label>
+              {isEditing ? (
+                <input
+                  type="text"
+                  name="full_name"
+                  value={formData.full_name}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                  placeholder="例: 田中太郎"
+                />
+              ) : (
+                <div className="px-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl">
+                  <HTMLRenderer
+                    content={formData.full_name || user?.full_name || ''}
+                    className="text-gray-900 dark:text-white font-medium"
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Email - Read Only */}
+            <div className="group">
+              <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">
+                メールアドレス / Email
+              </label>
+              <div className="px-4 py-3 bg-gray-100 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-xl">
+                <p className="text-gray-500 dark:text-gray-400 font-medium">
+                  {formData.email || user?.email || ''}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl p-5 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+              <Award className="w-5 h-5" />
+            </div>
+            <div className="text-3xl font-black">0</div>
+          </div>
+          <p className="text-sm font-bold opacity-90">完了したテスト</p>
+        </div>
+
+        <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl p-5 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5" />
+            </div>
+            <div className="text-3xl font-black">0%</div>
+          </div>
+          <p className="text-sm font-bold opacity-90">平均スコア</p>
+        </div>
+
+        <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl p-5 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+              <Clock className="w-5 h-5" />
+            </div>
+            <div className="text-3xl font-black">0h</div>
+          </div>
+          <p className="text-sm font-bold opacity-90">学習時間</p>
+        </div>
+      </div>
+
+      {/* Avatar Modal */}
+      {showAvatarModal && (
+        <>
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" onClick={handleCancelAvatar} />
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border-2 border-gray-200 dark:border-slate-700 p-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                アバター変更
+              </h3>
+              
+              <div className="space-y-4">
+                {/* Preview */}
+                <div className="flex justify-center">
+                  <div className="relative">
+                    {tempAvatar ? (
+                      <img
+                        src={tempAvatar}
+                        alt="Preview"
+                        className="w-32 h-32 rounded-2xl object-cover border-4 border-emerald-200 dark:border-emerald-800 shadow-lg"
+                        onError={() => {
+                          setTempAvatar('');
+                          setSelectedFile(null);
+                        }}
+                      />
+                    ) : (
+                      <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 flex items-center justify-center text-white text-5xl font-black border-4 border-emerald-200 dark:border-emerald-800 shadow-lg">
+                        {user?.full_name?.charAt(0).toUpperCase() || 'U'}
+                      </div>
+                    )}
+                    {tempAvatar && (
+                      <button
+                        onClick={handleRemoveImage}
+                        className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center shadow-lg transition-colors"
+                      >
+                        <X className="w-4 h-4 text-white" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* File Upload */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">
+                    画像を選択
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                      id="avatar-upload"
+                    />
+                    <label
+                      htmlFor="avatar-upload"
+                      className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-gray-50 dark:bg-slate-800 border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-xl text-gray-600 dark:text-gray-400 hover:border-emerald-500 dark:hover:border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all cursor-pointer"
+                    >
+                      <Upload className="w-5 h-5" />
+                      <span className="font-medium">
+                        {selectedFile ? selectedFile.name : '画像をアップロード'}
+                      </span>
+                    </label>
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    JPG, PNG, GIF (最大 5MB)
+                  </p>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleCancelAvatar}
+                    disabled={isSaving}
+                    className="flex-1 px-4 py-3 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    onClick={handleSaveAvatar}
+                    disabled={isSaving || !selectedFile}
+                    className="flex-1 px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:hover:scale-100"
+                  >
+                    {isSaving ? 'アップロード中...' : '保存'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Password Modal */}
+      {showPasswordModal && (
+        <>
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" onClick={() => setShowPasswordModal(false)} />
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border-2 border-gray-200 dark:border-slate-700 p-6">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                パスワード変更
+              </h3>
+              
+              <div className="space-y-4">
+                {/* Current Password */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">
+                    現在のパスワード
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPasswords.current ? 'text' : 'password'}
+                      name="currentPassword"
+                      value={passwordData.currentPassword}
+                      onChange={handlePasswordChange}
+                      className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswords(prev => ({ ...prev, current: !prev.current }))}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
+                      {showPasswords.current ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* New Password */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">
+                    新しいパスワード
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPasswords.new ? 'text' : 'password'}
+                      name="newPassword"
+                      value={passwordData.newPassword}
+                      onChange={handlePasswordChange}
+                      className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswords(prev => ({ ...prev, new: !prev.new }))}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
+                      {showPasswords.new ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-2">
+                    パスワード確認
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPasswords.confirm ? 'text' : 'password'}
+                      name="confirmPassword"
+                      value={passwordData.confirmPassword}
+                      onChange={handlePasswordChange}
+                      className="w-full px-4 py-3 pr-12 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
+                      placeholder="••••••••"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswords(prev => ({ ...prev, confirm: !prev.confirm }))}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                    >
+                      {showPasswords.confirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex gap-3 pt-2">
+                  <button
+                    onClick={() => {
+                      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                      setShowPasswordModal(false);
+                    }}
+                    disabled={isSaving}
+                    className="flex-1 px-4 py-3 bg-gray-200 dark:bg-slate-800 text-gray-700 dark:text-gray-300 rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
+                  >
+                    キャンセル
+                  </button>
+                  <button
+                    onClick={handleSavePassword}
+                    disabled={isSaving || !passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword}
+                    className="flex-1 px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl font-bold hover:shadow-lg hover:scale-105 transition-all disabled:opacity-50 disabled:hover:scale-100"
+                  >
+                    {isSaving ? '変更中...' : '変更'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

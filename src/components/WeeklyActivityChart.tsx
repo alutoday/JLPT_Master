@@ -21,48 +21,52 @@ export function WeeklyActivityChart() {
   }));
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+    <div className="h-full flex flex-col">
+      <div className="flex items-center justify-between mb-1.5">
+        <h3 className="text-sm font-bold text-gray-900 dark:text-white">
           {t('dashboard.weeklyActivity')}
         </h3>
-        <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+        <div className="text-[9px] text-gray-500 dark:text-gray-400 font-medium">
           Last 7 days
         </div>
       </div>
 
-      <div className="h-40">
+      <div className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+          <BarChart data={data} margin={{ top: 5, right: 8, left: -15, bottom: 0 }}>
             <XAxis
               dataKey="day"
-              tick={{ fill: 'currentColor', fontSize: 11 }}
+              tick={{ fill: 'currentColor', fontSize: 9 }}
               className="text-gray-600 dark:text-gray-400"
               axisLine={false}
               tickLine={false}
             />
             <YAxis
-              tick={{ fill: 'currentColor', fontSize: 11 }}
+              tick={{ fill: 'currentColor', fontSize: 9 }}
               className="text-gray-600 dark:text-gray-400"
               axisLine={false}
               tickLine={false}
               allowDecimals={false}
+              domain={[0, 'dataMax + 1']}
+              ticks={[0, 1, 2, 3, 4, 5]}
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                backgroundColor: '#064e3b',
                 border: 'none',
                 borderRadius: '8px',
-                fontSize: '12px',
+                fontSize: '10px',
+                padding: '6px 8px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
               }}
-              labelStyle={{ color: '#fff' }}
+              labelStyle={{ color: '#d1fae5', fontWeight: 'bold' }}
               itemStyle={{ color: '#fff' }}
             />
-            <Bar dataKey="completed" radius={[6, 6, 0, 0]}>
+            <Bar dataKey="completed" radius={[4, 4, 0, 0]}>
               {data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={entry.isToday ? '#6366f1' : '#9ca3af'}
+                  fill={entry.isToday ? '#167845ff' : '#6ee7b7'}
                 />
               ))}
             </Bar>
@@ -70,13 +74,13 @@ export function WeeklyActivityChart() {
         </ResponsiveContainer>
       </div>
 
-      <div className="flex items-center justify-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+      <div className="flex items-center justify-center gap-2.5 text-[9px] text-gray-600 dark:text-gray-400 mt-1">
         <span className="inline-flex items-center gap-1">
-          <span className="w-3 h-3 rounded bg-indigo-600"></span>
+          <span className="w-1.5 h-1.5 rounded bg-emerald-700 dark:bg-emerald-600"></span>
           Today
         </span>
         <span className="inline-flex items-center gap-1">
-          <span className="w-3 h-3 rounded bg-gray-400"></span>
+          <span className="w-1.5 h-1.5 rounded bg-emerald-300"></span>
           Other days
         </span>
       </div>
