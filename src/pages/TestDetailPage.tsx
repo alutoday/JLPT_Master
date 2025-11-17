@@ -44,8 +44,14 @@ export const TestDetailPage: React.FC = () => {
 
   const handleSectionClick = async (section: ISectionWithParts) => {
     try {
-      const attempt = await dataService.startSectionAttempt(user!.id, section.id);
-      navigate(`/tests/${id}/sections/${section.id}?attemptId=${attempt.id}&mode=exam`);
+      // First create test attempt
+      const testAttempt = await dataService.startTestAttempt(user!.id, testId);
+      
+      // Then create section attempt
+      const sectionAttempt = await dataService.startSectionAttempt(testAttempt.id, section.id);
+      
+      // Navigate to exam page
+      navigate(`/sectionAttempts/${sectionAttempt.id}?mode=exam`);
     } catch (error) {
       console.error('Failed to start section:', error);
     }

@@ -224,6 +224,20 @@ export interface IAuthResponse {
 }
 
 // ============================================================================
+// User Profile Update
+// ============================================================================
+
+export interface IUserUpdate {
+  full_name?: string;
+  urlAvatar?: string | null;
+}
+
+export interface IPasswordChange {
+  current_password: string;
+  new_password: string;
+}
+
+// ============================================================================
 // UI State Types
 // ============================================================================
 

@@ -16,6 +16,8 @@ import type {
   IRegisterData,
   IUser,
   ISectionAttempt,
+  IUserUpdate,
+  IPasswordChange,
 } from '../types';
 import type { IDataService } from './IDataService';
 
@@ -114,18 +116,6 @@ export class ApiDataService implements IDataService {
     return response.data;
   }
 
-  async resumeSectionAttempt(attemptId: number): Promise<ISectionAttempt> {
-    const response = await this.api.patch<ISectionAttempt>(`/section-attempts/${attemptId}/resume`);
-    return response.data;
-  }
-
-  async saveProgress(attemptId: number, timeRemaining: number): Promise<ISectionAttempt> {
-    const response = await this.api.patch<ISectionAttempt>(`/section-attempts/${attemptId}/progress`, {
-      time_remaining: timeRemaining,
-    });
-    return response.data;
-  }
-
   async submitAttempt(data: ISubmission): Promise<IResult> {
     const response = await this.api.post<IResult>(
       `/section-attempts/${data.section_attempt_id}/submit`,
@@ -137,10 +127,6 @@ export class ApiDataService implements IDataService {
   // ============================================================================
   // User History
   // ============================================================================
-
-  async getHistory(userId: number): Promise<ITestAttempt[]> {
-    return this.getTestAttempts(userId);
-  }
 
   async getTestAttempts(userId: number, testId?: number): Promise<ITestAttempt[]> {
     const params = new URLSearchParams();
@@ -173,6 +159,31 @@ export class ApiDataService implements IDataService {
 
   async getCurrentUser(): Promise<IUser> {
     const response = await this.api.get<IUser>('/auth/me');
+    return response.data;
+  }
+
+  async updateUser(userId: number, data: IUserUpdate): Promise<IUser> {
+    const response = await this.api.patch<IUser>(`/users/${userId}`, data);
+    return response.data;
+  }
+
+  async changePassword(userId: number, data: IPasswordChange): Promise<void> {
+    await this.api.patch(`/users/${userId}/password`, data);
+  }
+
+  async uploadAvatar(userId: number, file: File): Promise<IUser> {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    
+    const response = await this.api.post<IUser>(
+      `/users/${userId}/avatar`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
     return response.data;
   }
 

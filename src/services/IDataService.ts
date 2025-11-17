@@ -16,6 +16,8 @@ import type {
   IRegisterData,
   IUser,
   ISectionAttempt,
+  IUserUpdate,
+  IPasswordChange,
 } from '../types';
 
 export interface IDataService {
@@ -77,26 +79,11 @@ export interface IDataService {
   startSectionAttempt(testAttemptId: number, sectionId: number): Promise<ISectionAttempt>;
 
   /**
-   * Resume a paused section attempt
-   * @param attemptId - Section attempt ID
-   * @returns Promise resolving to resumed section attempt with current state
-   */
-  resumeSectionAttempt(attemptId: number): Promise<ISectionAttempt>;
-
-  /**
    * Get section attempt by ID
    * @param attemptId - Section attempt ID
    * @returns Promise resolving to section attempt
    */
   getSectionAttempt(attemptId: number): Promise<ISectionAttempt>;
-
-  /**
-   * Save progress during attempt (auto-save functionality)
-   * @param attemptId - Section attempt ID
-   * @param timeRemaining - Remaining time in seconds
-   * @returns Promise resolving to updated section attempt
-   */
-  saveProgress(attemptId: number, timeRemaining: number): Promise<ISectionAttempt>;
 
   /**
    * Submit answers for a section attempt
@@ -108,13 +95,6 @@ export interface IDataService {
   // ============================================================================
   // User History
   // ============================================================================
-
-  /**
-   * Get user's section attempt history
-   * @param userId - User ID
-   * @returns Promise resolving to array of section attempts
-   */
-  getHistory(userId: number): Promise<ITestAttempt[]>;
 
   /**
    * Get user's test attempt history (grouped by test)
@@ -154,6 +134,30 @@ export interface IDataService {
    * @returns Promise resolving to user data
    */
   getCurrentUser(): Promise<IUser>;
+
+  /**
+   * Update user profile
+   * @param userId - User ID
+   * @param data - Updated user data
+   * @returns Promise resolving to updated user
+   */
+  updateUser(userId: number, data: IUserUpdate): Promise<IUser>;
+
+  /**
+   * Change user password
+   * @param userId - User ID
+   * @param data - Current and new password
+   * @returns Promise resolving when password is changed
+   */
+  changePassword(userId: number, data: IPasswordChange): Promise<void>;
+
+  /**
+   * Upload user avatar
+   * @param userId - User ID
+   * @param file - Avatar image file
+   * @returns Promise resolving to updated user with new avatar URL
+   */
+  uploadAvatar(userId: number, file: File): Promise<IUser>;
 
   /**
    * Logout current user
